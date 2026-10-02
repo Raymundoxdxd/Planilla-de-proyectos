@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es"><head><meta charset="utf-8"><title>Planilla de Obra</title>
+ <link rel="manifest" href="manifest.json">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <style>
 :root{--bg:#f2f1ed;--card:#fdfdfb;--tx:#1d2b26;--mu:#66736d;--bd:#dcdad2;--ac:#0f4d3c;--sb:#0f3b30;--ok:#2a7a3b;--bad:#b3261e;box-sizing:border-box;padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -166,4 +167,11 @@ function go(k){T=k;if(innerWidth<900)tgl(0);R();scrollTo(0,0)}
 function tgl(v){document.body.classList.toggle('open',v)}
 function R(){Q('sb').innerHTML='<h2>🏗️ Planilla de Obra</h2>'+TABS.map(([k,l])=>`<button class="${T==k?'on':''}" onclick="go('${k}')">${l}</button>`).join('');Q('ti').textContent=TABS.find(t=>t[0]==T)[1].replace(/^\S+\s/,'');Q('app').innerHTML=V[T]()}
 if(innerWidth>=900)tgl(1);R();
-</script></body></html>
+</script>
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./pwabuilder-sw.js');
+  }
+</script>
+</body>
+</html>

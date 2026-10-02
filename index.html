@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8"><title>Planilla de Obra</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root{--bg:#f2f1ed;--card:#fdfdfb;--tx:#1d2b26;--mu:#66736d;--bd:#dcdad2;--ac:#0f4d3c;--sb:#0f3b30;--ok:#2a7a3b;--bad:#b3261e;box-sizing:border-box;padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1b17;--card:#16282a;--tx:#e8efeb;--mu:#9bb0a7;--bd:#2a4a40;--ac:#2f8a68;--ok:#3f9a52;--bad:#d9534a}}
+:root[data-theme="dark"]{--bg:#0e1b17;--card:#16282a;--tx:#e8efeb;--mu:#9bb0a7;--bd:#2a4a40;--ac:#2f8a68;--ok:#3f9a52;--bad:#d9534a}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+#top{position:sticky;top:0;background:var(--sb);color:#fff;display:flex;align-items:center;gap:12px;padding:calc(12px + env(safe-area-inset-top,0px)) 14px 12px;z-index:5}
+#top b{font-size:18px}#mb{background:none;border:0;color:#fff;font-size:26px;line-height:1;padding:0 4px;cursor:pointer}
+#sb{position:fixed;top:0;left:0;bottom:0;width:280px;max-width:84vw;background:var(--sb);z-index:10;transform:translateX(-100%);transition:transform .25s;overflow-y:auto;padding:calc(18px + env(safe-area-inset-top,0px)) 14px 20px;box-sizing:border-box}
+#sb h2{margin:0 0 16px 6px;font-size:20px;color:#fff}
+#sb button{display:block;width:100%;text-align:left;background:none;border:0;color:#e8efeb;font:inherit;font-size:16px;padding:13px 16px;border-radius:10px;margin-bottom:2px;cursor:pointer}
+#sb button.on{background:#e8efeb;color:var(--sb);font-weight:700}
+#bk{position:fixed;inset:0;background:#0008;z-index:9;display:none}body.open #sb{transform:none}body.open #bk{display:block}
+#wrap{transition:margin .25s}@media(min-width:900px){#bk{display:none!important}body.open #wrap{margin-left:280px}}
+main{max-width:960px;margin:auto;padding:14px 14px 40px}
+.nt{background:#fff1cc;color:#6b4a00;border-radius:10px;padding:10px 12px;font-size:13px;margin:10px 0 0}
+.c{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:12px;margin-bottom:12px}
+.g{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+label{display:block;font-size:12px;color:var(--mu)}
+input,select{width:100%;box-sizing:border-box;padding:10px;margin-top:3px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx);font:inherit}
+input[type=checkbox]{width:auto;margin:0 6px 0 0}.ck{display:inline-flex;align-items:center;margin:6px 12px 0 0;font-size:14px;color:var(--tx)}
+button{font:inherit;cursor:pointer}
+.b{background:var(--ac);color:#fff;border:0;padding:10px 16px;border-radius:8px;margin:8px 6px 0 0}
+.s{background:transparent;color:var(--ac);border:1.5px solid var(--ac);padding:7px 12px;border-radius:8px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 0;border-bottom:1px solid var(--bd)}
+.row:last-child{border:0}small{display:block;color:var(--mu)}
+.t{border:1px solid var(--bd);background:var(--card);color:var(--tx);padding:9px 12px;border-radius:8px;margin-left:4px}
+.t.on.A{background:var(--ok);color:#fff;border-color:var(--ok)}.t.on.M{background:#b98000;color:#fff;border-color:#b98000}.t.on.F{background:var(--bad);color:#fff;border-color:var(--bad)}
+.sc{overflow-x:auto}table{border-collapse:collapse;width:100%;min-width:640px}
+th,td{padding:8px;border-bottom:1px solid var(--bd);text-align:right;white-space:nowrap}th:first-child,td:first-child{text-align:left}
+th{font-size:12px;color:var(--mu)}tfoot td{font-weight:700;border-top:2px solid var(--tx)}td.n{font-weight:700}
+.off{opacity:.5}.chip{display:inline-block;font-size:12px;background:var(--bg);border:1px solid var(--bd);border-radius:10px;padding:1px 8px;margin:2px 4px 0 0}
+.mu{color:var(--mu);font-size:13px}.ct{text-align:center;font-weight:600}
+#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--tx);color:var(--bg);padding:9px 16px;border-radius:20px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:9}
+</style></head><body>
+<div id="wrap"><div id="top"><button id="mb" onclick="tgl()" aria-label="Menú">☰</button><b id="ti"></b></div><main id="app"></main></div><aside id="sb"></aside><div id="bk" onclick="tgl(0)"></div><div id="toast"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<script>
+const K='planilla_v1';let S;
+try{S=JSON.parse(localStorage.getItem(K))}catch(e){}
+S=S&&S.emps?S:{emps:[],projs:[],days:[],movs:[]};
+const save=()=>{try{localStorage.setItem(K,JSON.stringify(S))}catch(e){toast('No se pudo guardar en este navegador')}};
+const uid=()=>Math.random().toString(36).slice(2,9);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const m=n=>'$'+(+n).toFixed(2),r2=n=>Math.round(n*100)/100,Q=id=>document.getElementById(id);
+const iso=d=>new Date(d.getTime()-d.getTimezoneOffset()*6e4).toISOString().slice(0,10);
+const now=new Date(),mon=new Date(now);mon.setDate(now.getDate()-((now.getDay()+6)%7));
+let T='plan',D=iso(now),PF=iso(mon),PT=D,PP='',P='',EID='';
+const act=()=>S.projs.filter(p=>p.s=='a'),pn=id=>(S.projs.find(p=>p.id==id)||{}).name||'Sin proyecto';
+const op=(a,sel,all)=>(all!=null?`<option value="">${all}</option>`:'')+a.map(x=>`<option value="${x.id}" ${x.id==sel?'selected':''}>${esc(x.name)}</option>`).join('');
+const TL={a:'Adelanto',d:'Descuento',b:'Bono / extra'},w=x=>x.s=='A'?1:x.s=='M'?.5:0;
+function toast(t){const e=Q('toast');e.textContent=t;e.style.opacity=1;clearTimeout(toast.h);toast.h=setTimeout(()=>e.style.opacity=0,2600)}
+
+function calc(f,t,p){
+ return S.emps.map(e=>{
+  const ds=S.days.filter(x=>x.e==e.id&&x.d>=f&&x.d<=t&&(!p||x.p==p));
+  const ms=S.movs.filter(x=>x.e==e.id&&x.d>=f&&x.d<=t&&(!p||x.p==p));
+  const sm=k=>ms.filter(x=>x.t==k).reduce((a,x)=>a+x.a,0);
+  const dias=ds.reduce((a,x)=>a+w(x),0),fal=ds.filter(x=>x.s=='F').length;
+  const bruto=r2(ds.reduce((a,x)=>a+w(x)*(x.r??e.rate),0)),bono=r2(sm('b')),adel=r2(sm('a')),desc=r2(sm('d'));
+  return{n:e.name,dias,fal,bruto,bono,adel,desc,neto:r2(bruto+bono-adel-desc)};
+ }).filter(r=>r.dias||r.fal||r.bono||r.adel||r.desc).sort((a,b)=>a.n.localeCompare(b.n));
+}
+const HD=['Empleado','Días','Faltas','Bruto','Bonos','Adelantos','Descuentos','A pagar'];
+const tots=rs=>['TOTAL',...['dias','fal','bruto','bono','adel','desc','neto'].map(k=>r2(rs.reduce((a,r)=>a+r[k],0)))];
+const fn=x=>`planilla_${(PP?pn(PP):'todos').replace(/\W+/g,'_')}_${PF}_${PT}.${x}`;
+
+function vPlan(){
+ const rs=calc(PF,PT,PP),t=tots(rs);
+ return`<div class=c><div class=g>
+ <label>Desde<input type=date value="${PF}" onchange="PF=this.value;R()"></label>
+ <label>Hasta<input type=date value="${PT}" onchange="PT=this.value;R()"></label>
+ <label>Proyecto<select onchange="PP=this.value;R()">${op(S.projs.map(p=>({id:p.id,name:p.name+(p.s=='f'?' (finalizado)':'')})),PP,'Todos los proyectos')}</select></label></div>
+ <p class=nt>Al filtrar por proyecto solo se incluyen adelantos y descuentos registrados a ese proyecto.</p></div>
+ <div class="c sc">${rs.length?`<table><thead><tr>${HD.map(h=>`<th>${h}`).join('')}</tr></thead><tbody>${rs.map(r=>`<tr><td>${esc(r.n)}<td>${r.dias}<td>${r.fal}<td>${m(r.bruto)}<td>${m(r.bono)}<td>${m(r.adel)}<td>${m(r.desc)}<td class=n>${m(r.neto)}`).join('')}</tbody>
+ <tfoot><tr><td>TOTAL<td>${t[1]}<td>${t[2]}<td>${m(t[3])}<td>${m(t[4])}<td>${m(t[5])}<td>${m(t[6])}<td>${m(t[7])}</tfoot></table>`:'<p class=mu>No hay registros en este rango.</p>'}</div>
+ ${rs.length?'<button class=b onclick=xl()>Descargar Excel</button><button class=b onclick=pdf()>Descargar PDF</button>':''}`;
+}
+function vAsis(){
+ const a=act();if(!a.find(p=>p.id==P))P=a[0]?.id||'';
+ if(!a.length)return'<div class=c>Primero cree un proyecto en la pestaña Proyectos.</div>';
+ const es=S.emps.filter(e=>e.on&&(e.ps||[]).includes(P)).sort((x,y)=>x.name.localeCompare(y.name));
+ const dn=new Date(D+'T12:00').toLocaleDateString('es-SV',{weekday:'long',day:'numeric',month:'long'});
+ return`<div class=c><div class=g><label>Proyecto<select onchange="P=this.value;R()">${op(a,P)}</select></label>
+ <label>Fecha<input type=date value="${D}" onchange="D=this.value||D;R()"></label></div>
+ <p class=ct><button class=s onclick=sh(-1)>‹</button> ${dn} <button class=s onclick=sh(1)>›</button></p>
+ ${es.length?es.map(e=>{const r=S.days.find(x=>x.e==e.id&&x.d==D),cur=r&&r.p==P?r.s:'';
+ return`<div class=row><div><b>${esc(e.name)}</b><small>${m(e.rate)}/día${r&&r.p!=P?' · ya marcado en '+esc(pn(r.p)):''}</small></div><div>${[['A','Asistió'],['M','½ día'],['F','Falta']].map(([k,l])=>`<button class="t ${k} ${cur==k?'on':''}" onclick="mark('${e.id}','${k}')">${l}</button>`).join('')}</div></div>`}).join('')+'<button class=b onclick=markAll()>Marcar a todos como asistió</button>':'<p class=mu>No hay empleados asignados a este proyecto (asígnelos en Personal).</p>'}</div>`;
+}
+function sh(n){const d=new Date(D+'T12:00');d.setDate(d.getDate()+n);D=iso(d);R()}
+function mark(id,k){const i=S.days.findIndex(x=>x.e==id&&x.d==D),x=S.days[i];
+ if(i>=0)S.days.splice(i,1);
+ if(!(x&&x.p==P&&x.s==k))S.days.push({e:id,d:D,p:P,s:k,r:S.emps.find(e=>e.id==id).rate});save();R()}
+function markAll(){S.emps.filter(e=>e.on&&(e.ps||[]).includes(P)&&!S.days.some(x=>x.e==e.id&&x.d==D)).forEach(e=>S.days.push({e:e.id,d:D,p:P,s:'A',r:e.rate}));save();R()}
+
+function vMov(){
+ const es=S.emps.filter(e=>e.on).sort((a,b)=>a.name.localeCompare(b.name));
+ const ls=[...S.movs].sort((a,b)=>b.d.localeCompare(a.d)).slice(0,60);
+ return`<div class=c>${es.length?`<div class=g><label>Empleado<select id=me>${op(es)}</select></label>
+ <label>Tipo<select id=mt><option value=a>Adelanto<option value=d>Descuento<option value=b>Bono / extra</select></label>
+ <label>Proyecto<select id=mp>${op(act(),P,'Sin proyecto')}</select></label>
+ <label>Monto ($)<input id=ma type=number step=.01 min=0 inputmode=decimal></label>
+ <label>Fecha<input id=md type=date value="${D}"></label><label>Nota<input id=mn></label></div>
+ <button class=b onclick=addMov()>Registrar</button>`:'<p class=mu>Agregue empleados primero.</p>'}</div>
+ <div class=c><b>Últimos movimientos</b>${ls.map(x=>{const e=S.emps.find(e=>e.id==x.e)||{name:'?'};
+ return`<div class=row><div>${esc(e.name)} · <b>${TL[x.t]}</b> ${m(x.a)}<small>${x.d} · ${esc(pn(x.p))}${x.n?' · '+esc(x.n):''}</small></div><button class=s onclick="delMov('${x.id}')">✕</button></div>`}).join('')||'<p class=mu>Sin movimientos.</p>'}</div>`;
+}
+function addMov(){const e=Q('me').value,a=parseFloat(Q('ma').value);if(!e||!(a>0))return toast('Elija empleado y monto');
+ S.movs.push({id:uid(),e,p:Q('mp').value,t:Q('mt').value,a,d:Q('md').value||D,n:Q('mn').value.trim()});save();R();toast('Registrado')}
+function delMov(id){S.movs=S.movs.filter(x=>x.id!=id);save();R()}
+
+function vEmp(){
+ const ee=S.emps.find(e=>e.id==EID)||{ps:[]},a=act();
+ return`<div class=c><b>${EID?'Editar empleado':'Nuevo empleado'}</b><div class=g>
+ <label>Nombre<input id=en value="${esc(ee.name)}"></label><label>Cargo (albañil, ayudante…)<input id=ec value="${esc(ee.role)}"></label>
+ <label>Pago diario ($)<input id=er type=number step=.01 min=0 inputmode=decimal value="${ee.rate??''}"></label></div>
+ <label style="margin-top:8px">Proyectos asignados</label>${a.map(p=>`<label class=ck><input type=checkbox class=pk value="${p.id}" ${(ee.ps||[]).includes(p.id)?'checked':''}>${esc(p.name)}</label>`).join('')||'<span class=mu>Cree proyectos primero.</span>'}<br>
+ <button class=b onclick=saveEmp()>Guardar</button>${EID?'<button class="s" onclick="EID=\'\';R()">Cancelar</button>':''}
+ <p class=nt>Si cambia el pago diario, solo aplica a los días que marque desde ahora; lo ya marcado conserva su pago.</p></div>
+ <div class=c>${[...S.emps].sort((x,y)=>x.name.localeCompare(y.name)).map(e=>`<div class="row ${e.on?'':'off'}"><div><b>${esc(e.name)}</b> ${e.role?'· '+esc(e.role):''}<small>${m(e.rate)}/día</small>${(e.ps||[]).map(p=>`<span class=chip>${esc(pn(p))}</span>`).join('')}</div>
+ <div><button class=s onclick="EID='${e.id}';R();scrollTo(0,0)">Editar</button> <button class=s onclick="tog('${e.id}')">${e.on?'Dar de baja':'Reactivar'}</button></div></div>`).join('')||'<p class=mu>Sin empleados.</p>'}</div>`;
+}
+function saveEmp(){const n=Q('en').value.trim(),rv=Q('er').value,r=parseFloat(rv);if(!n||rv===''||!(r>=0))return toast('Escriba nombre y pago diario');
+ const ee=S.emps.find(e=>e.id==EID),keep=(ee?.ps||[]).filter(p=>!act().some(x=>x.id==p));
+ const o={name:n,role:Q('ec').value.trim(),rate:r,ps:[...[...document.querySelectorAll('.pk:checked')].map(c=>c.value),...keep]};
+ if(ee)Object.assign(ee,o);else S.emps.push({id:uid(),on:true,...o});EID='';save();R();toast('Guardado')}
+function tog(id){const e=S.emps.find(e=>e.id==id);e.on=!e.on;save();R()}
+
+function vProj(){
+ return`<div class=c><div class=g><label>Nuevo proyecto<input id=pnm placeholder="Ej. Residencial Las Flores"></label></div><button class=b onclick=addProj()>Crear proyecto</button></div>
+ <div class=c>${S.projs.map(p=>`<div class="row ${p.s=='f'?'off':''}"><div><b>${esc(p.name)}</b><small>${p.s=='a'?'Activo · '+S.emps.filter(e=>e.on&&(e.ps||[]).includes(p.id)).length+' empleados':'Finalizado'+(p.fin?' el '+p.fin:'')}</small></div>
+ <button class=s onclick="finP('${p.id}')">${p.s=='a'?'Finalizar':'Reactivar'}</button></div>`).join('')||'<p class=mu>Sin proyectos.</p>'}</div>`;
+}
+function addProj(){const n=Q('pnm').value.trim();if(!n)return;S.projs.push({id:uid(),name:n,s:'a'});save();R()}
+function finP(id){const p=S.projs.find(p=>p.id==id);p.s=p.s=='a'?'f':'a';p.fin=p.s=='f'?iso(new Date()):'';save();R()}
+
+function vResp(){
+ return`<div class=c><p class=nt>Los datos se guardan en este navegador y este dispositivo. Para pasarlos de la PC al teléfono (o tener copia de seguridad) descargue el respaldo y cárguelo en el otro equipo.</p>
+ <p class=mu>${S.emps.length} empleados · ${S.projs.length} proyectos · ${S.days.length} días marcados · ${S.movs.length} movimientos</p>
+ <button class=b onclick="dl('respaldo_planilla_'+iso(new Date())+'.json',JSON.stringify(S))">Descargar respaldo</button>
+ <label style="margin-top:12px">Cargar respaldo (reemplaza los datos actuales)<input type=file accept=".json" onchange="imp(this.files[0])"></label></div>`;
+}
+function imp(f){if(!f)return;const r=new FileReader();r.onload=()=>{try{const o=JSON.parse(r.result);if(!o.emps||!o.projs||!o.days||!o.movs)throw 0;S=o;save();R();toast('Respaldo cargado')}catch(e){toast('Archivo no válido')}};r.readAsText(f)}
+
+async function dl(name,data){const d=window.claude?await claude.use('downloads'):null;if(!d)return toast('La descarga no está disponible en esta vista');
+ try{await d.save({filename:name,data});toast('Listo')}catch(e){if(e.code!='declined')toast('No se pudo guardar el archivo')}}
+function xl(){const rs=calc(PF,PT,PP);
+ const ws=XLSX.utils.aoa_to_sheet([['Planilla de pago - '+(PP?pn(PP):'Todos los proyectos')],['Del '+PF+' al '+PT],[],HD,...rs.map(r=>[r.n,r.dias,r.fal,r.bruto,r.bono,r.adel,r.desc,r.neto]),tots(rs)]);
+ ws['!cols']=[{wch:28},{wch:8},{wch:8},{wch:12},{wch:12},{wch:12},{wch:12},{wch:12}];
+ const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Planilla');
+ dl(fn('xlsx'),new Blob([XLSX.write(wb,{type:'array',bookType:'xlsx'})]))}
+function pdf(){const rs=calc(PF,PT,PP),t=tots(rs),d=new window.jspdf.jsPDF({orientation:'landscape'});
+ d.setFontSize(14);d.text('Planilla de pago - '+(PP?pn(PP):'Todos los proyectos'),14,14);d.setFontSize(10);d.text('Del '+PF+' al '+PT,14,21);
+ d.autoTable({startY:26,head:[[...HD,'Firma']],body:rs.map(r=>[r.n,r.dias,r.fal,m(r.bruto),m(r.bono),m(r.adel),m(r.desc),m(r.neto),'']),
+ foot:[[t[0],t[1],t[2],m(t[3]),m(t[4]),m(t[5]),m(t[6]),m(t[7]),'']],styles:{fontSize:9,minCellHeight:10,valign:'middle'},headStyles:{fillColor:[194,87,12]},footStyles:{fillColor:[60,60,60]},columnStyles:{8:{cellWidth:45}}});
+ dl(fn('pdf'),d.output('blob'))}
+
+const V={plan:vPlan,asis:vAsis,mov:vMov,emp:vEmp,proj:vProj,resp:vResp};
+const TABS=[['plan','📋 Planilla'],['asis','🗓️ Asistencia'],['mov','💵 Adelantos y desc.'],['emp','👷 Personal'],['proj','🏗️ Proyectos'],['resp','💾 Respaldo']];
+function go(k){T=k;if(innerWidth<900)tgl(0);R();scrollTo(0,0)}
+function tgl(v){document.body.classList.toggle('open',v)}
+function R(){Q('sb').innerHTML='<h2>🏗️ Planilla de Obra</h2>'+TABS.map(([k,l])=>`<button class="${T==k?'on':''}" onclick="go('${k}')">${l}</button>`).join('');Q('ti').textContent=TABS.find(t=>t[0]==T)[1].replace(/^\S+\s/,'');Q('app').innerHTML=V[T]()}
+if(innerWidth>=900)tgl(1);R();
+</script></body></html>

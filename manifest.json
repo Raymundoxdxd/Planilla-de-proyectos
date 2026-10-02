@@ -1,13 +1,24 @@
 {
-  "background_color": "#ffffff",
-  "dir": "ltr",
+  "id": "com.obraplanilla.app",
+  "name": "ObraPlanilla - Control de Nómina",
+  "short_name": "ObraPlanilla",
+  "start_url": "./index.html",
   "display": "standalone",
-  "name": "Obra Planilla",
-  "orientation": "any",
-  "scope": "/",
-  "short_name": "Control de Nómina",
-  "start_url": "/./index.html",
-  "theme_color": "#ffffff",
+  "background_color": "#1E293B",
+  "theme_color": "#F59E0B",
   "description": "Gestión y cálculo de planillas para empresas de construcción.",
-  "lang": "es"
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
 }

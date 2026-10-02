@@ -1,0 +1,8 @@
+{
+  "name": "ObraPlanilla - Control de Nómina",
+  "short_name": "ObraPlanilla",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#1E293B",
+  "theme_color": "#F59E0B",
+  "description": "Gestión y cálculo de planillas para empresas de construcción."

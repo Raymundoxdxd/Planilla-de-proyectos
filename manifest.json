@@ -21,5 +21,12 @@
       "type": "image/png",
       "purpose": "any maskable"
     }
+  ],
+  "categories": [
+    "business",
+    "design",
+    "developer",
+    "social",
+    "utilities"
   ]
 }

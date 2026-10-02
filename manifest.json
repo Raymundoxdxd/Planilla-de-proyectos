@@ -1,0 +1,13 @@
+{
+  "background_color": "#ffffff",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "Obra Planilla",
+  "orientation": "any",
+  "scope": "/",
+  "short_name": "Control de Nómina",
+  "start_url": "/./index.html",
+  "theme_color": "#ffffff",
+  "description": "Gestión y cálculo de planillas para empresas de construcción.",
+  "lang": "es"
+}
